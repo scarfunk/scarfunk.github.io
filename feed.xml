@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>scarfunk&#39;s blog</title>
+  <subtitle>Developer</subtitle>
+  <link href="/feed.xml" rel="self"/>
+  
+  <link href="http://scarfunk.github.io/"/>
+  <updated>2016-07-20T16:06:15.000Z</updated>
+  <id>http://scarfunk.github.io/</id>
+  
+  <author>
+    <name>scarfunk</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>test</title>
+    <link href="http://scarfunk.github.io/2016/07/21/test/"/>
+    <id>http://scarfunk.github.io/2016/07/21/test/</id>
+    <published>2016-07-20T15:26:46.000Z</published>
+    <updated>2016-07-20T16:06:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Hello-test"><a href="#Hello-test" class="headerlink" title="Hello test"></a>Hello test</h1><p>첫번째 md post test.</p>
+<figure class="highlight javascript"><figcaption><span>test.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">alert(<span class="string">'hello'</span>);</div></pre></td></tr></table></figure>
+<pre><code>2 tabs are github code.
+alert(&apos;hello&apos;);
+this is not work.
+</code></pre><h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Hello-test&quot;&gt;&lt;a href=&quot;#Hello-test&quot; class=&quot;headerlink&quot; title=&quot;Hello test&quot;&gt;&lt;/a&gt;Hello test&lt;/h1&gt;&lt;p&gt;첫번째 md post test.&lt;/p&gt;
+&lt;figure class=&quot;h
+    
+    </summary>
+    
+      <category term="talk" scheme="http://scarfunk.github.io/categories/talk/"/>
+    
+    
+      <category term="daily" scheme="http://scarfunk.github.io/tags/daily/"/>
+    
+  </entry>
+  
+</feed>
