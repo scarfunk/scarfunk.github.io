@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>http://scarfunk.github.io/2016/08/06/CORS/</loc>
+        <lastmod>2016-08-06T02:18:38.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://scarfunk.github.io/2016/07/21/es6-for-humans/</loc>
         <lastmod>2016-07-28T16:02:23.000Z</lastmod>
         <changefreq>weekly</changefreq>
