@@ -11,7 +11,7 @@ math: true
 
 이 글은 제 새로운 아트 프로젝트 [microgpt](https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95)에 대한 간단한 가이드입니다. 의존성 없는 순수 Python 200줄짜리 단일 파일로 GPT를 학습하고 추론합니다. 이 파일에는 필요한 모든 알고리즘적 내용이 담겨 있습니다: 문서 데이터셋, 토크나이저, 자동 미분 엔진, GPT-2 스타일의 신경망 아키텍처, Adam 옵티마이저, 학습 루프, 추론 루프. 나머지는 전부 효율성의 문제입니다. 이것 이상으로 단순화할 수 없습니다. 이 스크립트는 여러 프로젝트(micrograd, makemore, nanogpt 등)와 LLM을 핵심만 남기려는 10년간의 집착의 결정체이며, 저는 이것이 아름답다고 생각합니다 🥹. 심지어 3개의 컬럼으로 완벽하게 나뉘기까지 합니다:
 
-![microgpt 코드](/assets/microgpt.jpg)
+![microgpt 코드](https://karpathy.github.io/assets/microgpt.jpg)
 
 코드를 찾을 수 있는 곳:
 
