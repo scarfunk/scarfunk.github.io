@@ -24,7 +24,19 @@ avatar:
 toc: true
 
 comments:
-  provider:
+  provider: giscus
+  giscus:
+    repo: scarfunk/scarfunk.github.io
+    repo_id: MDEwOlJlcG9zaXRvcnk2Mzc4MTg0MQ==
+    category: General
+    category_id: DIC_kwDOA8070c4C2nP0
+    mapping: pathname
+    strict: 0
+    input_position: bottom
+    theme: preferred_color_scheme
+    lang: ko
+    reactions_enabled: 1
+    crossorigin: anonymous
 
 analytics:
 
