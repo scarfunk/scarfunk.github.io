@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[번역] microgpt - 200줄의 순수 파이썬으로 GPT를 학습하고 추론하기"
-date: 2026-02-17 18:00:00 +0900
+date: 2026-02-17 10:00:00 +0900
 categories: ai
 tags: [gpt, deep-learning, transformer, translation]
 math: true
