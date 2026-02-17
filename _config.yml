@@ -1,11 +1,57 @@
+theme: jekyll-theme-chirpy
+
+lang: ko
+timezone: Asia/Seoul
+
 title: scarfunk's blog
-description: "개발,기타등등"
-author: scarfunk
+tagline: 개발,기타등등
+description: 개발,기타등등
+
 url: "https://scarfunk.github.io"
 baseurl: ""
 
-theme: minima
+github:
+  username: scarfunk
+
+social:
+  name: scarfunk
+  links:
+    - https://github.com/scarfunk
+
+avatar:
+
+toc: true
+
+comments:
+  provider:
+
+analytics:
 
 permalink: /:year/:month/:day/:title/
 
-markdown: kramdown
+kramdown:
+  syntax_highlighter: rouge
+
+paginate: 10
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+  - scope:
+      path: _tabs
+    values:
+      layout: page
+      permalink: /:title/
+
+sass:
+  style: compressed
+
+plugins:
+  - jekyll-paginate
+  - jekyll-seo-tag
+  - jekyll-sitemap
