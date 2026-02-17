@@ -1,0 +1,11 @@
+title: scarfunk's blog
+description: "개발,기타등등"
+author: scarfunk
+url: "https://scarfunk.github.io"
+baseurl: ""
+
+theme: minima
+
+permalink: /:year/:month/:day/:title/
+
+markdown: kramdown
