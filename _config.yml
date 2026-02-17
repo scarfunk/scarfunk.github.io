@@ -5,7 +5,8 @@ timezone: Asia/Seoul
 
 title: scarfunk's blog
 tagline: 개발,기타등등
-description: 개발,기타등등
+description: >-
+  개발,기타등등
 
 url: "https://scarfunk.github.io"
 baseurl: ""
@@ -31,8 +32,16 @@ permalink: /:year/:month/:day/:title/
 
 kramdown:
   syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+    block:
+      line_numbers: true
+      start_line: 1
 
-paginate: 10
+collections:
+  tabs:
+    output: true
+    sort_by: order
 
 defaults:
   - scope:
@@ -43,7 +52,12 @@ defaults:
       comments: true
       toc: true
   - scope:
-      path: _tabs
+      path: _drafts
+    values:
+      comments: false
+  - scope:
+      path: ""
+      type: tabs
     values:
       layout: page
       permalink: /:title/
@@ -51,7 +65,33 @@ defaults:
 sass:
   style: compressed
 
-plugins:
-  - jekyll-paginate
-  - jekyll-seo-tag
-  - jekyll-sitemap
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  profile: false
+  blanklines: false
+  ignore:
+    envs: [development]
+
+exclude:
+  - "*.gem"
+  - "*.gemspec"
+  - docs
+  - tools
+  - README.md
+  - LICENSE
+  - purgecss.js
+  - "*.config.js"
+  - "package*.json"
+
+jekyll-archives:
+  enabled: [categories, tags]
+  layouts:
+    category: category
+    tag: tag
+  permalinks:
+    tag: /tags/:name/
+    category: /categories/:name/
+
+paginate: 10
